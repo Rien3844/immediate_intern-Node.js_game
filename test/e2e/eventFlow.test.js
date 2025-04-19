@@ -12,12 +12,13 @@ function signup(userId, address, callback){
         hostname: 'localhost',
         port: 8080,
         path: '/signup',
-        method: 'PORT',
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Contetnt-Length': data.length
+            'Content-Length': Buffer.byteLength(data)
         }
     }, res => {
+        console.log('[TEST] 응답 코드:', res.statusCode);
         assert.strictEqual(res.statusCode, 200);
         callback();
     });
@@ -36,7 +37,7 @@ function tcpClient(userId, timestamps, done){
         }));
     });
 
-    var step = 0;
+    let step = 0;
     client.on('data', data => {
         const msg = JSON.parse(data.toString());
 
@@ -64,12 +65,20 @@ function tcpClient(userId, timestamps, done){
 }
 
 // 테스트 실행
-signup('winner', '울산 동구', () =>{
+signup('winner', '울산시 동구', () =>{
     const now = Date.now();
     tcpClient('winner', [now, now + 100, now + 200, now + 300], (err)=> {
         if(err){
             throw err;
         }
-        console.log('[E2E] Test compvared successfully');
+        console.log('[E2E] Test completed successfully');
+
+        if(process.send){
+            process.send({
+                type: 'logWinner'
+            });
+        }else{
+            console.log('[TEST] 우승자 메시지를 보낼 수 없습니다.(마스터 프로세스가 아님.)')
+        }
     });
 });

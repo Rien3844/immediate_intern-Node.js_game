@@ -10,7 +10,7 @@ const PORT = 9000;//포트 지정
 const server = net.createServer(socket => {
     
     //유저 식별을 위한 별도의 변수 생성
-    var userId = null;
+    let userId = null;
 
     socket.on('data', data => {
         try{
@@ -21,7 +21,7 @@ const server = net.createServer(socket => {
                 //등록 여부 확인
                 if(!isRegistered(message.userId)){
                     socket.write(JSON.stringify({
-                        error: 'noet_registered'
+                        error: 'not_registered'
                     }));
                     return socket.end();
                 }
@@ -68,6 +68,10 @@ const server = net.createServer(socket => {
 
     socket.on('end', () => {
         console.log(`[TCP] Connection closed: ${userId}`);
+        //우승자 요청 메시지 전송
+        if (process.send) {
+            process.send({ type: 'logWinner' });
+        }
     });
 
     socket.on('error', e => {

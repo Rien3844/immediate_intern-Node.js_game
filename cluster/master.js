@@ -10,7 +10,7 @@ const { access } = require('fs');
 //시스템의 CPU 개수 만큼 워커 생성
 const numCPUs = os.cpus().length;
 
-for(var i = 0; i < numCPUs; i++){
+for(let i = 0; i < numCPUs; i++){
     //각 워커 별로 worker.js실행
     const worker = cluster.fork();
 
@@ -18,6 +18,7 @@ for(var i = 0; i < numCPUs; i++){
     worker.on('message', (msg) => {
         if(msg.type === 'logWinner'){
             const allUsers = getAllUsers();
+            const winner = resolveWinner(allUsers);
             console.log(`Winner: ${JSON.stringify(winner)}`);
         }
     });

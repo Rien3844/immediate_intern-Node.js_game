@@ -8,7 +8,7 @@ const PORT = 8080;//포트지정
 const server = http.createServer((req, res) => {
     if(req.method === 'POST' && req.url === '/signup') {
         //post요청 받을 빈 문자열 생성
-        var body = '';
+        let body = '';
 
         req.on('data', chunk => (body += chunk));
         req.on('end', () => {
@@ -49,4 +49,4 @@ const server = http.createServer((req, res) => {
 //지정된 포트로 서버 실행
 server.listen(PORT, () => {
     console.log(`[HTTP] Signup server listening on port ${PORT}.`);
-})
+});
